@@ -14,26 +14,24 @@ func init() {
 	log.SetOutput(os.Stdout)
 }
 
-func main() {
+func CliDisplay(argsWithoutProg []string){
 
-	argsWithoutProg := os.Args[1:]
-
-	if len(argsWithoutProg) < 3 {
-		fmt.Fprintf(os.Stderr, "usage ./data-police-uk-harvester <latitude> <longitude> <date>\n")
+	if len(argsWithoutProg) < 4 {
+		fmt.Fprintf(os.Stderr, "usage ./data-police-uk-harvester cli <latitude> <longitude> <date>\n")
 		os.Exit(1)
 	}
 
-	lat, err := strconv.ParseFloat(argsWithoutProg[0], 64)
+	lat, err := strconv.ParseFloat(argsWithoutProg[1], 64)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	lgt, err := strconv.ParseFloat(argsWithoutProg[1], 64)
+	lgt, err := strconv.ParseFloat(argsWithoutProg[2], 64)
 	if err != nil {
 		panic(err.Error())
 	}
 
-	splitDate := strings.Split(argsWithoutProg[2], "-")
+	splitDate := strings.Split(argsWithoutProg[3], "-")
 	if len(splitDate) != 2 {
 		fmt.Println("Date parameter: should have the following syntax <year>-<month>")
 		os.Exit(1)
@@ -57,4 +55,33 @@ func main() {
 
 
 	log.Println("response ", data)
+}
+
+func WebServerDisplay(){
+
+}
+
+func UsageDisplay(){
+	fmt.Fprintf(os.Stderr, "usage ./data-police-uk-harvester <web-server|cli>\n")
+	os.Exit(1)
+}
+
+func main() {
+
+	argsWithoutProg := os.Args[1:]
+
+	if len(argsWithoutProg) < 1 {
+		UsageDisplay()
+	}
+
+	if argsWithoutProg[0] == "web-server" {
+		WebServerDisplay()
+	}else{
+		if argsWithoutProg[0] == "cli" {
+			CliDisplay(argsWithoutProg)
+		}else {
+			UsageDisplay()
+		}
+	}
+
 }
