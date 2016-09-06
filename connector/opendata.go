@@ -6,20 +6,24 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"github.com/juju/loggo"
+
 )
 
 const DOMAIN  = "https://data.police.uk/api"
 const API = "/stops-street"
+var logger = loggo.GetLogger("connector")
+
 
 type Stop struct {
 	AgeRange string `json:"age_range"`
 	SelfDefinedEthnicity string `json:"self_defined_ethnicity"`
 	DateTime string `json:"datetime"`
-	RemovalOfMoreThanOuterClothing bool `json:"removal_of_more_than_outer_clothing"`
+	RemovalOfMoreThanOuterClothing json.RawMessage `json:"removal_of_more_than_outer_clothing"`
 	Operation string `json:"operation"`
 	OfficerDefinedEthnicity string `json:"officer_defined_ethnicity"`
 	ObjectOfSearch string `json:"object_of_search"`
-	InvolvedPerson bool `json:"involved_person"`
+	InvolvedPerson json.RawMessage `json:"involved_person"`
 	Gender string `json:"gender"`
 	Legislation string `json:"legislation"`
 	Outcome json.RawMessage `json:"outcome"`

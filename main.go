@@ -3,12 +3,12 @@ package main
 import (
 	"log"
 	"os"
-
 	"github.com/v4lproik/data-police-uk-harvester/connector"
 	"fmt"
 	"strconv"
 	"strings"
 	"net/http"
+	"time"
 )
 
 func init() {
@@ -54,12 +54,40 @@ func CliDisplay(argsWithoutProg []string){
 		os.Exit(1)
 	}
 
-
 	log.Println("response ", data)
 }
 
+func getData(w http.ResponseWriter, r *http.Request) {
+	longitude := r.URL.Query().Get("longitude")
+	latitude := r.URL.Query().Get("latitude")
+
+	lat, err := strconv.ParseFloat(latitude, 64)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	lgt, err := strconv.ParseFloat(longitude, 64)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	now := time.Now()
+	data, err := connector.GetData(lat, lgt, int64(now.Year()-1), int64(now.Month()))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	log.Println("response ", data)
+	fmt.Fprint(w, data)
+}
+
 func WebServerDisplay(){
+	//static html
 	http.Handle("/",  http.FileServer(http.Dir("./public")))
+	//ajax call
+	http.HandleFunc("/getData", getData)
+
 	err := http.ListenAndServe(":9090", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
