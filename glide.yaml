@@ -1,0 +1,3 @@
+package: github.com/v4lproik/data-police-uk-harvester
+import:
+- package: github.com/juju/loggo
