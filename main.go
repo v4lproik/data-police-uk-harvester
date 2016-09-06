@@ -9,16 +9,20 @@ import (
 	"strings"
 	"net/http"
 	"time"
+	"github.com/juju/loggo"
 )
 
-func init() {
-	log.SetOutput(os.Stdout)
+var logger = loggo.GetLogger("main")
+
+func init()  {
+	// Start displaying from info
+	loggo.ConfigureLoggers("info")
 }
 
 func CliDisplay(argsWithoutProg []string){
 
 	if len(argsWithoutProg) < 4 {
-		fmt.Fprintf(os.Stderr, "usage ./data-police-uk-harvester cli <latitude> <longitude> <date>\n")
+		logger.Errorf("usage ./data-police-uk-harvester cli <latitude> <longitude> <date>\n")
 		os.Exit(1)
 	}
 
@@ -34,7 +38,7 @@ func CliDisplay(argsWithoutProg []string){
 
 	splitDate := strings.Split(argsWithoutProg[3], "-")
 	if len(splitDate) != 2 {
-		fmt.Println("Date parameter: should have the following syntax <year>-<month>")
+		logger.Errorf("Date parameter: should have the following syntax <year>-<month>")
 		os.Exit(1)
 	}
 
@@ -54,7 +58,7 @@ func CliDisplay(argsWithoutProg []string){
 		os.Exit(1)
 	}
 
-	log.Println("response ", data)
+	logger.Infof("response ", data)
 }
 
 func getData(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +82,7 @@ func getData(w http.ResponseWriter, r *http.Request) {
 		os.Exit(1)
 	}
 
-	log.Println("response ", data)
+	logger.Infof("response ", data)
 	fmt.Fprint(w, data)
 }
 
@@ -95,7 +99,7 @@ func WebServerDisplay(){
 }
 
 func UsageDisplay(){
-	fmt.Fprintf(os.Stderr, "usage ./data-police-uk-harvester <web-server|cli>\n")
+	logger.Errorf("usage ./data-police-uk-harvester <web-server|cli>\n")
 	os.Exit(1)
 }
 

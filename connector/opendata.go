@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"io/ioutil"
 	"encoding/json"
-	"fmt"
 	"strconv"
 	"github.com/juju/loggo"
 
@@ -13,7 +12,6 @@ import (
 const DOMAIN  = "https://data.police.uk/api"
 const API = "/stops-street"
 var logger = loggo.GetLogger("connector")
-
 
 type Stop struct {
 	AgeRange string `json:"age_range"`
@@ -48,6 +46,8 @@ func GetData(lat float64, lng float64, year int64, month int64) ([]Stop, error) 
 
 	url := DOMAIN + API + "?lat=" + strconv.FormatFloat(lat, 'f', -1, 64) + "&lng=" + strconv.FormatFloat(lng, 'f', -1, 64) + "&date=" + strconv.FormatInt(year, 10) + "-" + strconv.FormatInt(month, 10)
 
+	logger.Infof("Get data from " + url)
+
 	res, err := http.Get(url)
 	if err != nil {
 		panic(err.Error())
@@ -68,7 +68,7 @@ func getStops(body []byte) ([]Stop, error) {
 
 	err := json.Unmarshal(body, &items)
 	if(err != nil){
-		fmt.Println("whoops:", err)
+		logger.Errorf("whoops:", err)
 	}
 	return items, err
 }
